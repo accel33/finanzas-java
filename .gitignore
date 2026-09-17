@@ -1,0 +1,14 @@
+# Build
+target/
+
+# IDEs: IntelliJ, VS Code, Eclipse / m2e (esta última la genera también el
+# soporte de Java de VS Code, por eso aparece aunque no uses Eclipse)
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# macOS
+.DS_Store
