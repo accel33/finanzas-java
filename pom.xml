@@ -4,17 +4,43 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <!-- Identidad del proyecto: groupId = quién lo hace, artifactId = qué es -->
+  <!-- Heredar de Spring Boot fija las versiones de ~1900 librerías ya probadas juntas -->
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>4.1.1</version>
+    <relativePath/>
+  </parent>
+
   <groupId>com.accel</groupId>
   <artifactId>finanzas</artifactId>
   <version>0.1.0</version>
   <packaging>jar</packaging>
 
   <properties>
-    <!-- release = para qué versión de Java compilamos -->
-    <maven.compiler.release>21</maven.compiler.release>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <java.version>21</java.version>
+    <!--
+      Cuál de los main() arranca la aplicación. Sin esto el build falla, porque
+      hay dos: el de FinanzasApplication y el de la clase de aprendizaje.
+    -->
+    <start-class>com.accel.finanzas.FinanzasApplication</start-class>
   </properties>
 
-  <!-- Sin dependencias todavía. Cada etapa agregará las suyas, una por una. -->
+  <dependencies>
+    <!-- Starter = paquete curado. Este trae Spring MVC + Jackson (JSON) + Tomcat embebido -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webmvc</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Empaqueta un jar ejecutable con la app y sus dependencias adentro -->
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>

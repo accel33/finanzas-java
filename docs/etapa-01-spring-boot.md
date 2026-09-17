@@ -3,6 +3,12 @@
 **Objetivo:** convertir el proyecto de la Etapa 0 en una aplicación Spring Boot
 que levanta un servidor web y responde JSON en `http://localhost:8080/ping`.
 
+> **Esta etapa ya está aplicada en el repo.** La guía queda como la explicación
+> paso a paso de lo que hay en el código, no como tarea pendiente: léela para
+> entender cada pieza y sáltate los comandos. Si quieres ver el antes y el
+> después con cifras medidas, está en
+> [qué cambia con Spring Boot](etapa-01-que-cambia-con-spring-boot.md).
+
 **Sabes que terminaste cuando:**
 1. `./mvnw spring-boot:run` arranca y el log dice `Tomcat started on port 8080`.
 2. Abrir `http://localhost:8080/ping` en el navegador devuelve un JSON.
@@ -42,7 +48,7 @@ Reemplaza **todo** el contenido de `pom.xml` por esto:
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>4.1.0</version>
+    <version>4.1.1</version>
     <relativePath/>
   </parent>
 
@@ -54,6 +60,8 @@ Reemplaza **todo** el contenido de `pom.xml` por esto:
   <properties>
     <!-- El parent traduce esta propiedad a maven.compiler.release (lo que usábamos en la Etapa 0) -->
     <java.version>21</java.version>
+    <!-- Cuál de los main() arranca la app (hay otro en la clase de aprendizaje) -->
+    <start-class>com.accel.finanzas.FinanzasApplication</start-class>
   </properties>
 
   <dependencies>
@@ -124,7 +132,9 @@ Bórralo:
 rm src/main/java/com/accel/finanzas/Main.java
 ```
 
-**`Movimiento.java` se queda** — el CRUD de la Etapa 2 lo va a usar.
+**`Movimiento.java` se queda** — el CRUD de la Etapa 2 lo va a usar. Y el ejemplo
+de streams que vivía en `Main` no se perdió: se mudó, explicado de cuatro
+maneras distintas, a `aprendizaje/StreamsExplicados.java`.
 
 Crea `src/main/java/com/accel/finanzas/FinanzasApplication.java`:
 

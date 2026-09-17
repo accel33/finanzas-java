@@ -5,11 +5,28 @@ Proyecto de aprendizaje **construido por etapas** rumbo al stack backend bancari
 El dominio son finanzas personales porque mapea directo a banca: tipo de cambio →
 circuit breaker + cache, saldo vs historial → CQRS, transferencias → SAGA.
 
-## Cómo correr (estado actual: Etapa 0)
+## Cómo correr (estado actual: Etapa 1)
+
+En desarrollo:
 
 ```bash
-./mvnw compile
-java -cp target/classes com.accel.finanzas.Main
+./mvnw spring-boot:run
+```
+
+```bash
+curl http://localhost:8080/ping
+```
+
+Como se despliega en producción — un jar con el servidor adentro:
+
+```bash
+./mvnw clean package && java -jar target/finanzas-0.1.0.jar
+```
+
+Material de aprendizaje, independiente de la aplicación:
+
+```bash
+java -cp target/classes com.accel.finanzas.aprendizaje.StreamsExplicados
 ```
 
 > Esta sección se actualiza en cada etapa. Es parte del trato: la documentación
@@ -17,8 +34,9 @@ java -cp target/classes com.accel.finanzas.Main
 
 ## Cómo trabajamos
 
-1. Cada etapa tiene su guía en [`docs/`](docs/). **La implementas tú** siguiendo
-   la guía; el chat es para dudas, revisión de código y desvíos.
+1. Cada etapa tiene su guía en [`docs/`](docs/), escrita para poder seguirla a
+   mano. Unas las implementas tú y otras se implementan sobre la marcha, pero la
+   guía siempre queda: sirve igual como explicación de lo que hay en el código.
 2. **Un commit por etapa.** El `git log` cuenta la historia del proyecto.
 3. Cada guía cierra con dos secciones fijas:
    - **Tecnicismos de esta etapa** — el vocabulario formal de lo que acabas de
@@ -26,7 +44,11 @@ java -cp target/classes com.accel.finanzas.Main
      en una entrevista.
    - **Para la entrevista** — la historia corta que esta etapa te deja contada
      en primera persona.
-4. Reglas del código que no se negocian desde el día 1:
+4. El código de la aplicación va limpio, sin comentarios que expliquen lo obvio.
+   Lo didáctico vive aparte, en el paquete `aprendizaje/`: ahí el mismo cálculo
+   aparece escrito de varias formas, de lo explícito a lo compacto, para poder
+   leer qué hace cada atajo. Ese paquete se puede borrar entero sin romper nada.
+5. Reglas del código que no se negocian desde el día 1:
    - Dinero **siempre** en `BigDecimal`, nunca `double` ni `float`.
    - `record` para DTOs (*Data Transfer Objects*: objetos sin lógica que cruzan
      fronteras, p. ej. salir como JSON) y objetos de valor; Lombok solo cuando
@@ -37,7 +59,7 @@ java -cp target/classes com.accel.finanzas.Main
 
 ### Fase A — El monolito
 - [x] **Etapa 0** — Maven + Java puro: la estructura estándar y por qué existe → [guía](docs/etapa-00-maven-java-puro.md)
-- [ ] **Etapa 1** — Spring Boot: levantar el servidor → [guía](docs/etapa-01-spring-boot.md)
+- [x] **Etapa 1** — Spring Boot: levantar el servidor → [guía](docs/etapa-01-spring-boot.md) · [qué cambió](docs/etapa-01-que-cambia-con-spring-boot.md)
 - [ ] **Etapa 2** — CRUD de movimientos en memoria (REST completo)
 - [ ] **Etapa 3** — Capas: controller / service / repository + validación + errores
 - [ ] **Etapa 4** — Tests con JUnit y Mockito; de aquí en adelante, TDD
