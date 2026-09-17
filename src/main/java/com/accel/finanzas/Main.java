@@ -6,10 +6,7 @@ import java.util.List;
 import java.util.Properties;
 
 public class Main {
-
     public static void main(String[] args) throws Exception {
-        // Los archivos de src/main/resources viajan dentro del .jar y se leen así, desde el
-        // "classpath"
         System.out.println("hola mundo somos amigos");
 
         var config = new Properties();
