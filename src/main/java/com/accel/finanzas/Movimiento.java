@@ -1,5 +1,6 @@
 package com.accel.finanzas;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
-public record Movimiento(String descripcion, BigDecimal monto) {}
+public record Movimiento(Long id, String descripcion, BigDecimal monto, LocalDate fecha) {}

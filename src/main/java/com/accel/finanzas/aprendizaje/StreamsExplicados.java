@@ -2,6 +2,7 @@ package com.accel.finanzas.aprendizaje;
 
 import com.accel.finanzas.Movimiento;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,9 +22,10 @@ public class StreamsExplicados {
 
     private static final List<Movimiento> MOVIMIENTOS =
             List.of(
-                    new Movimiento("Almuerzo", new BigDecimal("25.50")),
-                    new Movimiento("Taxi", new BigDecimal("12.00")),
-                    new Movimiento("Menú del viernes", new BigDecimal("18.90")));
+                    new Movimiento(1L, "Almuerzo", new BigDecimal("25.50"), LocalDate.of(2026, 9, 15)),
+                    new Movimiento(2L, "Taxi", new BigDecimal("12.00"), LocalDate.of(2026, 9, 16)),
+                    new Movimiento(
+                            3L, "Menú del viernes", new BigDecimal("18.90"), LocalDate.of(2026, 9, 17)));
 
     public static void main(String[] args) {
         System.out.println("1) Bucle de toda la vida:      S/ " + conBucle(MOVIMIENTOS));
