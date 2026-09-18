@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import com.accel.finanzas.client.TipoDeCambioClient;
+import com.accel.finanzas.exception.MonedaNoSoportadaException;
 import com.accel.finanzas.exception.MovimientoNoEncontradoException;
 import com.accel.finanzas.model.Movimiento;
 import com.accel.finanzas.model.Resumen;
@@ -15,6 +16,7 @@ import com.accel.finanzas.repository.MovimientoRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -91,7 +93,7 @@ class MovimientoServiceTest {
     @DisplayName("resumenEn convierte el total con la tasa y lo deja en 2 decimales")
     void resumenEnConvierteElTotal() {
         given(repositorio.buscarTodos()).willReturn(List.of(movimiento(1L, "Almuerzo", "64.90")));
-        given(tipoDeCambio.tasa("PEN", "USD")).willReturn(new BigDecimal("0.2841"));
+        given(tipoDeCambio.tasas("PEN")).willReturn(Map.of("USD", new BigDecimal("0.2841")));
 
         ResumenConvertido resumen = servicio.resumenEn("usd");
 
@@ -104,9 +106,20 @@ class MovimientoServiceTest {
     @DisplayName("el redondeo es bancario: 2.125 queda en 2.12, no en 2.13")
     void redondeoBancario() {
         given(repositorio.buscarTodos()).willReturn(List.of(movimiento(1L, "Prueba", "10.00")));
-        given(tipoDeCambio.tasa("PEN", "USD")).willReturn(new BigDecimal("0.2125"));
+        given(tipoDeCambio.tasas("PEN")).willReturn(Map.of("USD", new BigDecimal("0.2125")));
 
         assertThat(servicio.resumenEn("USD").totalConvertido()).isEqualByComparingTo("2.12");
+    }
+
+    @Test
+    @DisplayName("una moneda que no está entre las tasas es MonedaNoSoportada")
+    void monedaNoSoportada() {
+        given(repositorio.buscarTodos()).willReturn(List.of(movimiento(1L, "Prueba", "10.00")));
+        given(tipoDeCambio.tasas("PEN")).willReturn(Map.of("USD", new BigDecimal("0.30")));
+
+        assertThatThrownBy(() -> servicio.resumenEn("XYZ"))
+                .isInstanceOf(MonedaNoSoportadaException.class)
+                .hasMessageContaining("XYZ");
     }
 
     private static Movimiento movimiento(Long id, String descripcion, String monto) {

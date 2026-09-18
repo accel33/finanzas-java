@@ -44,6 +44,16 @@
       <artifactId>spring-boot-starter-restclient</artifactId>
     </dependency>
 
+    <!-- Abstracción de caché de Spring (@Cacheable) + Caffeine como almacén en memoria -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-cache</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.github.ben-manes.caffeine</groupId>
+      <artifactId>caffeine</artifactId>
+    </dependency>
+
     <!-- JPA + Hibernate + Spring Data: el mapeo objeto-relacional -->
     <dependency>
       <groupId>org.springframework.boot</groupId>

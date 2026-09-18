@@ -5,7 +5,7 @@ Proyecto de aprendizaje **construido por etapas** rumbo al stack backend bancari
 El dominio son finanzas personales porque mapea directo a banca: tipo de cambio →
 circuit breaker + cache, saldo vs historial → CQRS, transferencias → SAGA.
 
-## Cómo correr (estado actual: Etapa 7)
+## Cómo correr (estado actual: Etapa 8)
 
 En desarrollo (la base corre en Docker):
 
@@ -43,6 +43,10 @@ java -cp target/classes com.accel.finanzas.aprendizaje.OptionalExplicado
 
 ```bash
 java -cp target/classes com.accel.finanzas.aprendizaje.InyeccionExplicada
+```
+
+```bash
+java -cp target/classes com.accel.finanzas.aprendizaje.CacheAsideExplicado
 ```
 
 > Esta sección se actualiza en cada etapa. Es parte del trato: la documentación
@@ -86,7 +90,7 @@ java -cp target/classes com.accel.finanzas.aprendizaje.InyeccionExplicada
 
 ### Fase B — Resiliencia y reactivo
 - [x] **Etapa 7** — Cliente de tipo de cambio (API externa, timeouts) → [guía](docs/etapa-07-cliente-http-timeouts.md)
-- [ ] **Etapa 8** — Cache Aside
+- [x] **Etapa 8** — Cache Aside → [guía](docs/etapa-08-cache-aside.md)
 - [ ] **Etapa 9** — Circuit Breaker + laboratorio de fallas
 - [ ] **Etapa 10** — Migración a WebFlux + R2DBC
 

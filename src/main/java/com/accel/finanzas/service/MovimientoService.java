@@ -1,6 +1,7 @@
 package com.accel.finanzas.service;
 
 import com.accel.finanzas.client.TipoDeCambioClient;
+import com.accel.finanzas.exception.MonedaNoSoportadaException;
 import com.accel.finanzas.exception.MovimientoNoEncontradoException;
 import com.accel.finanzas.model.Movimiento;
 import com.accel.finanzas.model.Resumen;
@@ -10,6 +11,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -67,7 +69,11 @@ public class MovimientoService {
     public ResumenConvertido resumenEn(String moneda) {
         Resumen resumen = resumen();
         String destino = moneda.toUpperCase(Locale.ROOT);
-        BigDecimal tasa = tipoDeCambio.tasa(MONEDA_BASE, destino);
+        Map<String, BigDecimal> tasas = tipoDeCambio.tasas(MONEDA_BASE);
+        BigDecimal tasa = tasas.get(destino);
+        if (tasa == null) {
+            throw new MonedaNoSoportadaException(destino);
+        }
         BigDecimal convertido = resumen.total().multiply(tasa).setScale(2, RoundingMode.HALF_EVEN);
         return new ResumenConvertido(
                 resumen.cantidad(), resumen.total(), destino, tasa, convertido);

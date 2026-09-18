@@ -132,6 +132,27 @@ Con timeout de 3 s, fallaba en 3.2 s con un 503 limpio.
 `setScale(2, RoundingMode.HALF_EVEN)`: **redondeo bancario**. En el empate va al par (2.125 →
 2.12). `HALF_UP` sube todos los empates y acumula sesgo sobre millones de operaciones.
 
+### ¿Cómo cacheas? ¿Qué es Cache Aside?
+Cache Aside: busco en la caché; si no está, voy a la fuente, lo guardo y lo devuelvo. En Spring
+es `@Cacheable` + `@EnableCaching`, con **Caffeine** (en memoria, local) y un **TTL** de una
+hora. Uso `sync = true` para evitar la **estampida**: cuando la entrada caduca y llegan muchas
+peticiones a la vez, solo una va a la fuente. Los errores no se cachean. Con varias
+instancias y datos que deben verse igual en todas, usaría **Redis** (Azure Cache for Redis);
+cambiarlo no toca el código gracias a la abstracción.
+
+### ¿Por qué a veces `@Cacheable` o `@Transactional` no funcionan?
+Por la **autoinvocación**. Spring implementa esas anotaciones con un **proxy**: el bean que te
+inyecta es una subclase generada que envuelve tu objeto. El proxy solo intercepta llamadas que
+**vienen de fuera**. Si un método llama a otro método anotado **de la misma clase**, lo hace
+sobre `this`, el objeto real, y se salta el proxy. Me pasó con la caché: cuatro peticiones,
+cuatro llamadas al proveedor, sin ningún error. Con `@Transactional` es peor: el método corre
+sin transacción y nadie te avisa.
+
+### ¿Qué cachearías y qué no?
+Lo caro de obtener y que cambia poco, como una tasa de cambio. No los datos propios que
+cambian con cada escritura: obligan a invalidar con `@CacheEvict` en cada cambio, y una
+invalidación olvidada muestra datos viejos.
+
 ### Códigos de estado
 **201 Created** con cabecera `Location` al crear. **204 No Content** al borrar. **404** si el
 id no existe. **400** si los datos no validan. **503** si una dependencia externa no responde (no 500: el 500 significa que tu código falló). **406** si el cliente pide un formato que no

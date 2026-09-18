@@ -7,8 +7,9 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-import com.accel.finanzas.exception.MonedaNoSoportadaException;
 import com.accel.finanzas.exception.TipoDeCambioNoDisponibleException;
+import java.math.BigDecimal;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,27 +38,18 @@ class TipoDeCambioClientTest {
     }
 
     @Test
-    @DisplayName("lee la tasa del JSON del proveedor, sin perder decimales")
-    void leeLaTasa() {
+    @DisplayName("lee todas las tasas del JSON del proveedor, sin perder decimales")
+    void leeLasTasas() {
         proveedor
                 .expect(requestTo("https://tasas.test/latest/PEN"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(RESPUESTA_REAL, MediaType.APPLICATION_JSON));
 
-        assertThat(cliente.tasa("PEN", "USD")).isEqualByComparingTo("0.296909");
+        Map<String, BigDecimal> tasas = cliente.tasas("PEN");
+
+        assertThat(tasas.get("USD")).isEqualByComparingTo("0.296909");
+        assertThat(tasas).containsKeys("PEN", "USD", "EUR");
         proveedor.verify();
-    }
-
-    @Test
-    @DisplayName("una moneda que el proveedor no tiene es MonedaNoSoportada")
-    void monedaInexistente() {
-        proveedor
-                .expect(requestTo("https://tasas.test/latest/PEN"))
-                .andRespond(withSuccess(RESPUESTA_REAL, MediaType.APPLICATION_JSON));
-
-        assertThatThrownBy(() -> cliente.tasa("PEN", "XYZ"))
-                .isInstanceOf(MonedaNoSoportadaException.class)
-                .hasMessageContaining("XYZ");
     }
 
     @Test
@@ -65,7 +57,7 @@ class TipoDeCambioClientTest {
     void proveedorConError() {
         proveedor.expect(requestTo("https://tasas.test/latest/PEN")).andRespond(withServerError());
 
-        assertThatThrownBy(() -> cliente.tasa("PEN", "USD"))
+        assertThatThrownBy(() -> cliente.tasas("PEN"))
                 .isInstanceOf(TipoDeCambioNoDisponibleException.class);
     }
 }

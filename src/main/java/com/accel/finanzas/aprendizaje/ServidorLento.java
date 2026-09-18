@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Laboratorio de timeouts. NO forma parte de la aplicación.
@@ -40,11 +41,13 @@ public class ServidorLento {
                 "rates":{"PEN":1,"USD":0.30,"EUR":0.26}}"""
                         .getBytes(StandardCharsets.UTF_8);
 
+        AtomicInteger peticiones = new AtomicInteger();
         HttpServer servidor = HttpServer.create(new InetSocketAddress(9099), 0);
         servidor.setExecutor(Executors.newVirtualThreadPerTaskExecutor());
         servidor.createContext(
                 "/latest/",
                 intercambio -> {
+                    System.out.println("  proveedor: petición #" + peticiones.incrementAndGet());
                     try {
                         Thread.sleep(segundos * 1000L);
                     } catch (InterruptedException e) {
