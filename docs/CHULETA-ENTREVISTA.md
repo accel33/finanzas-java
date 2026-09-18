@@ -71,6 +71,40 @@ porque quien consume la API programa contra un contrato.
 parámetro del controller. Sin `@Valid`, las anotaciones no hacen nada: es el error más común.
 Devuelve todos los errores a la vez, no el primero.
 
+### ¿Cuándo se decide qué implementación de una interfaz se inyecta?
+Al arrancar, y lo hace Spring **por tipo**: busca entre sus beans uno asignable al tipo del
+parámetro del constructor. Si hay exactamente uno, lo inyecta. Si hay cero o dos, **no
+arranca** ("required a single bean, but 2 were found"). Se desempata con `@Primary`,
+`@Qualifier` o `@Profile`.
+
+### ¿Cómo persistes?
+JPA con Hibernate sobre PostgreSQL en Docker. Spring Data me genera el repositorio a partir
+de una interfaz que extiende `JpaRepository`. Por encima pongo un **adaptador** que implementa
+mi propia interfaz de repositorio y traduce entre la entidad y el modelo de dominio: por eso
+cambiar de memoria a PostgreSQL no tocó el service.
+
+### ¿Por qué la entidad no es un record?
+JPA necesita un **constructor sin argumentos**, que la clase **no sea final** (Hibernate crea
+proxies, subclases generadas en tiempo de ejecución, para la carga perezosa) y **campos
+escribibles**. Un record es final, inmutable y no tiene constructor vacío.
+
+### ¿Cómo manejas el esquema?
+Con **Flyway**: migraciones SQL versionadas (`V1__...sql`, `V2__...sql`) que viajan en git.
+Hibernate en `ddl-auto=validate`, que solo verifica; **nunca `update` en producción**, porque
+nadie revisa el SQL que ejecuta. Una migración aplicada no se edita: se escribe una nueva.
+
+### ¿Validación en la API o en la base?
+En las dos. Bean Validation protege la API; un `CHECK (monto > 0)` protege los datos de
+cualquier otra vía de entrada. Se llama **defensa en profundidad**.
+
+### ¿Qué es Open Session In View?
+Que la conexión a la base quede abierta toda la petición HTTP, incluso al serializar el JSON.
+Esconde consultas perezosas fuera del service. Lo desactivo con `spring.jpa.open-in-view=false`.
+
+### ¿Cómo testeas contra la base?
+Con **Testcontainers**: el test levanta un PostgreSQL real en Docker y lo destruye al
+terminar. H2 es más rápido pero no es PostgreSQL, y hay SQL que se comporta distinto.
+
 ### Códigos de estado
 **201 Created** con cabecera `Location` al crear. **204 No Content** al borrar. **404** si el
 id no existe. **400** si los datos no validan. **406** si el cliente pide un formato que no

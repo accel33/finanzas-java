@@ -5,9 +5,13 @@ Proyecto de aprendizaje **construido por etapas** rumbo al stack backend bancari
 El dominio son finanzas personales porque mapea directo a banca: tipo de cambio →
 circuit breaker + cache, saldo vs historial → CQRS, transferencias → SAGA.
 
-## Cómo correr (estado actual: Etapa 4)
+## Cómo correr (estado actual: Etapa 5)
 
-En desarrollo:
+En desarrollo (la base corre en Docker):
+
+```bash
+docker compose up -d
+```
 
 ```bash
 ./mvnw spring-boot:run
@@ -73,7 +77,7 @@ java -cp target/classes com.accel.finanzas.aprendizaje.InyeccionExplicada
 - [x] **Etapa 2** — CRUD de movimientos en memoria (REST completo) → [guía](docs/etapa-02-crud-en-memoria.md)
 - [x] **Etapa 3** — Capas: controller / service / repository + validación + errores → [guía](docs/etapa-03-capas-validacion-errores.md)
 - [x] **Etapa 4** — Tests con JUnit y Mockito → [guía](docs/etapa-04-tests.md)
-- [ ] **Etapa 5** — PostgreSQL con Docker + JPA (aquí entra el modelado de datos)
+- [x] **Etapa 5** — PostgreSQL con Docker + JPA + Flyway → [guía](docs/etapa-05-postgresql-jpa.md)
 - [ ] **Etapa 6** — Lombok: dónde aporta y dónde un record lo reemplaza
 
 ### Fase B — Resiliencia y reactivo
