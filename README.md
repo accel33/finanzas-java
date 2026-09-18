@@ -5,7 +5,7 @@ Proyecto de aprendizaje **construido por etapas** rumbo al stack backend bancari
 El dominio son finanzas personales porque mapea directo a banca: tipo de cambio →
 circuit breaker + cache, saldo vs historial → CQRS, transferencias → SAGA.
 
-## Cómo correr (estado actual: Etapa 3)
+## Cómo correr (estado actual: Etapa 4)
 
 En desarrollo:
 
@@ -63,6 +63,8 @@ java -cp target/classes com.accel.finanzas.aprendizaje.InyeccionExplicada
      aporte de verdad (entidades JPA con muchos campos — llegará en la Etapa 6).
    - Todo se corre y se prueba antes de dar la etapa por cerrada.
 
+> **[Chuleta de entrevista](docs/CHULETA-ENTREVISTA.md)** — todo lo construido aquí, en formato pregunta/respuesta.
+
 ## Roadmap
 
 ### Fase A — El monolito
@@ -70,7 +72,7 @@ java -cp target/classes com.accel.finanzas.aprendizaje.InyeccionExplicada
 - [x] **Etapa 1** — Spring Boot: levantar el servidor → [guía](docs/etapa-01-spring-boot.md) · [qué cambió](docs/etapa-01-que-cambia-con-spring-boot.md)
 - [x] **Etapa 2** — CRUD de movimientos en memoria (REST completo) → [guía](docs/etapa-02-crud-en-memoria.md)
 - [x] **Etapa 3** — Capas: controller / service / repository + validación + errores → [guía](docs/etapa-03-capas-validacion-errores.md)
-- [ ] **Etapa 4** — Tests con JUnit y Mockito; de aquí en adelante, TDD
+- [x] **Etapa 4** — Tests con JUnit y Mockito → [guía](docs/etapa-04-tests.md)
 - [ ] **Etapa 5** — PostgreSQL con Docker + JPA (aquí entra el modelado de datos)
 - [ ] **Etapa 6** — Lombok: dónde aporta y dónde un record lo reemplaza
 
