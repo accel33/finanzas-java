@@ -113,9 +113,28 @@ siendo inyección por constructor**, solo que Lombok escribe el constructor. `@S
 logger. Y en DTOs uso **records**: ahí Lombok no aporta, el lenguaje ya genera todo. Lombok es
 un *annotation processor*: trabaja al compilar y no viaja en el jar.
 
+### ¿Cómo consumes una API externa?
+Con **`RestClient`**, el cliente síncrono recomendado desde Spring 6.1 (`RestTemplate` está en
+mantenimiento; `WebClient` es para reactivo). Siempre con **dos timeouts**: de conexión
+(aceptar la conexión) y de lectura (esperar la respuesta). La configuración va en un record
+con `@ConfigurationProperties`, no en `@Value` sueltos. Leo el JSON con
+`@JsonIgnoreProperties(ignoreUnknown = true)` para que un campo nuevo del proveedor no me
+rompa (*tolerant reader*), y convierto sus errores en una excepción mía que termina en **503**.
+
+### ¿Por qué un timeout es tan importante?
+Porque **una dependencia caída es barata y una lenta es carísima**. Lo medí: caída, fallaba en
+0.17 s; lenta sin timeout razonable, cada petición tardaba 10.2 s con un hilo de Tomcat
+retenido. Tomcat tiene 200 hilos: si todos esperan a un proveedor lento, la aplicación entera
+deja de responder, incluso lo que no depende de ese proveedor. Eso es un **fallo en cascada**.
+Con timeout de 3 s, fallaba en 3.2 s con un 503 limpio.
+
+### ¿Cómo redondeas dinero?
+`setScale(2, RoundingMode.HALF_EVEN)`: **redondeo bancario**. En el empate va al par (2.125 →
+2.12). `HALF_UP` sube todos los empates y acumula sesgo sobre millones de operaciones.
+
 ### Códigos de estado
 **201 Created** con cabecera `Location` al crear. **204 No Content** al borrar. **404** si el
-id no existe. **400** si los datos no validan. **406** si el cliente pide un formato que no
+id no existe. **400** si los datos no validan. **503** si una dependencia externa no responde (no 500: el 500 significa que tu código falló). **406** si el cliente pide un formato que no
 sabes producir.
 
 ### PUT vs PATCH. ¿Qué es idempotencia?

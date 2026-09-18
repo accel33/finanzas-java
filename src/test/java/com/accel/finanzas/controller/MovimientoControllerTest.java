@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.accel.finanzas.exception.MovimientoNoEncontradoException;
+import com.accel.finanzas.exception.TipoDeCambioNoDisponibleException;
 import com.accel.finanzas.model.Movimiento;
 import com.accel.finanzas.service.MovimientoService;
 import java.math.BigDecimal;
@@ -86,5 +87,16 @@ class MovimientoControllerTest {
                         org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete(
                                 "/movimientos/99"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("si el tipo de cambio no responde, la API devuelve 503 y no un 500")
+    void tipoDeCambioCaidoDevuelve503() throws Exception {
+        given(servicio.resumenEn("USD")).willThrow(new TipoDeCambioNoDisponibleException(null));
+
+        mockMvc.perform(get("/movimientos/resumen/USD"))
+                .andExpect(status().isServiceUnavailable())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.title").value("Tipo de cambio no disponible"));
     }
 }

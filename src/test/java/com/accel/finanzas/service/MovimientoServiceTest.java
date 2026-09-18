@@ -6,9 +6,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
+import com.accel.finanzas.client.TipoDeCambioClient;
 import com.accel.finanzas.exception.MovimientoNoEncontradoException;
 import com.accel.finanzas.model.Movimiento;
 import com.accel.finanzas.model.Resumen;
+import com.accel.finanzas.model.ResumenConvertido;
 import com.accel.finanzas.repository.MovimientoRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -28,13 +30,15 @@ class MovimientoServiceTest {
 
     @Mock private MovimientoRepository repositorio;
 
+    @Mock private TipoDeCambioClient tipoDeCambio;
+
     @Captor private ArgumentCaptor<Movimiento> capturado;
 
     private MovimientoService servicio;
 
     @BeforeEach
     void prepararServicio() {
-        servicio = new MovimientoService(repositorio);
+        servicio = new MovimientoService(repositorio, tipoDeCambio);
     }
 
     @Test
@@ -81,6 +85,28 @@ class MovimientoServiceTest {
 
         assertThatThrownBy(() -> servicio.eliminar(99L))
                 .isInstanceOf(MovimientoNoEncontradoException.class);
+    }
+
+    @Test
+    @DisplayName("resumenEn convierte el total con la tasa y lo deja en 2 decimales")
+    void resumenEnConvierteElTotal() {
+        given(repositorio.buscarTodos()).willReturn(List.of(movimiento(1L, "Almuerzo", "64.90")));
+        given(tipoDeCambio.tasa("PEN", "USD")).willReturn(new BigDecimal("0.2841"));
+
+        ResumenConvertido resumen = servicio.resumenEn("usd");
+
+        assertThat(resumen.moneda()).isEqualTo("USD");
+        assertThat(resumen.totalSoles()).isEqualByComparingTo("64.90");
+        assertThat(resumen.totalConvertido()).isEqualByComparingTo("18.44");
+    }
+
+    @Test
+    @DisplayName("el redondeo es bancario: 2.125 queda en 2.12, no en 2.13")
+    void redondeoBancario() {
+        given(repositorio.buscarTodos()).willReturn(List.of(movimiento(1L, "Prueba", "10.00")));
+        given(tipoDeCambio.tasa("PEN", "USD")).willReturn(new BigDecimal("0.2125"));
+
+        assertThat(servicio.resumenEn("USD").totalConvertido()).isEqualByComparingTo("2.12");
     }
 
     private static Movimiento movimiento(Long id, String descripcion, String monto) {

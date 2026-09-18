@@ -38,6 +38,12 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-validation</artifactId>
     </dependency>
+    <!-- RestClient: el cliente HTTP síncrono moderno. En Boot 4 tiene su propio starter -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-restclient</artifactId>
+    </dependency>
+
     <!-- JPA + Hibernate + Spring Data: el mapeo objeto-relacional -->
     <dependency>
       <groupId>org.springframework.boot</groupId>

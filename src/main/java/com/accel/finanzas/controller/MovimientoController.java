@@ -2,6 +2,7 @@ package com.accel.finanzas.controller;
 
 import com.accel.finanzas.dto.MovimientoRequest;
 import com.accel.finanzas.dto.MovimientoResponse;
+import com.accel.finanzas.dto.ResumenConvertidoResponse;
 import com.accel.finanzas.dto.ResumenResponse;
 import com.accel.finanzas.model.Movimiento;
 import com.accel.finanzas.service.MovimientoService;
@@ -36,6 +37,11 @@ public class MovimientoController {
     @GetMapping("/resumen")
     public ResumenResponse resumen() {
         return ResumenResponse.desde(servicio.resumen());
+    }
+
+    @GetMapping("/resumen/{moneda}")
+    public ResumenConvertidoResponse resumenEn(@PathVariable String moneda) {
+        return ResumenConvertidoResponse.desde(servicio.resumenEn(moneda));
     }
 
     @GetMapping("/{id}")

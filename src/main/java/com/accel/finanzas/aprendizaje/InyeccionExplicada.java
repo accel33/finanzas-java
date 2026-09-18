@@ -1,5 +1,6 @@
 package com.accel.finanzas.aprendizaje;
 
+import com.accel.finanzas.client.TipoDeCambioClient;
 import com.accel.finanzas.model.Movimiento;
 import com.accel.finanzas.repository.MovimientoRepository;
 import com.accel.finanzas.repository.MovimientoRepositoryEnMemoria;
@@ -8,6 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.web.client.RestClient;
 
 /**
  * Material de aprendizaje. NO forma parte de la aplicación: borra este paquete entero cuando ya no
@@ -27,12 +29,14 @@ public class InyeccionExplicada {
     public static void main(String[] args) {
         System.out.println("1) Cableado a mano, igual que lo hace Spring al arrancar:");
         MovimientoRepository repositorio = new MovimientoRepositoryEnMemoria();
-        MovimientoService servicio = new MovimientoService(repositorio);
+        TipoDeCambioClient tipoDeCambio =
+                new TipoDeCambioClient(RestClient.create("https://open.er-api.com/v6"));
+        MovimientoService servicio = new MovimientoService(repositorio, tipoDeCambio);
         System.out.println("   total con el repositorio de verdad -> " + servicio.resumen());
 
         System.out.println();
         System.out.println("2) El mismo servicio, con otro repositorio, sin tocar el servicio:");
-        MovimientoService servicioFalso = new MovimientoService(new RepositorioDeMentira());
+        MovimientoService servicioFalso = new MovimientoService(new RepositorioDeMentira(), tipoDeCambio);
         System.out.println("   total con el repositorio falso     -> " + servicioFalso.resumen());
 
         System.out.println();

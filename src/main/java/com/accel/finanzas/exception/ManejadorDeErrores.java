@@ -34,4 +34,22 @@ public class ManejadorDeErrores {
         problema.setProperty("errores", errores);
         return problema;
     }
+
+    @ExceptionHandler(TipoDeCambioNoDisponibleException.class)
+    public ProblemDetail tipoDeCambioNoDisponible(TipoDeCambioNoDisponibleException excepcion) {
+        ProblemDetail problema =
+                ProblemDetail.forStatusAndDetail(
+                        HttpStatus.SERVICE_UNAVAILABLE,
+                        "No se pudo obtener el tipo de cambio. Intenta de nuevo en unos segundos.");
+        problema.setTitle("Tipo de cambio no disponible");
+        return problema;
+    }
+
+    @ExceptionHandler(MonedaNoSoportadaException.class)
+    public ProblemDetail monedaNoSoportada(MonedaNoSoportadaException excepcion) {
+        ProblemDetail problema =
+                ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, excepcion.getMessage());
+        problema.setTitle("Moneda no soportada");
+        return problema;
+    }
 }

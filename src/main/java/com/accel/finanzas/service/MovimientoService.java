@@ -1,11 +1,15 @@
 package com.accel.finanzas.service;
 
+import com.accel.finanzas.client.TipoDeCambioClient;
 import com.accel.finanzas.exception.MovimientoNoEncontradoException;
 import com.accel.finanzas.model.Movimiento;
 import com.accel.finanzas.model.Resumen;
+import com.accel.finanzas.model.ResumenConvertido;
 import com.accel.finanzas.repository.MovimientoRepository;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
+import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,7 +19,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MovimientoService {
 
+    private static final String MONEDA_BASE = "PEN";
+
     private final MovimientoRepository repositorio;
+    private final TipoDeCambioClient tipoDeCambio;
 
     public List<Movimiento> listar() {
         return repositorio.buscarTodos();
@@ -55,5 +62,14 @@ public class MovimientoService {
                         .map(Movimiento::monto)
                         .reduce(BigDecimal.ZERO, BigDecimal::add);
         return new Resumen(movimientos.size(), total);
+    }
+
+    public ResumenConvertido resumenEn(String moneda) {
+        Resumen resumen = resumen();
+        String destino = moneda.toUpperCase(Locale.ROOT);
+        BigDecimal tasa = tipoDeCambio.tasa(MONEDA_BASE, destino);
+        BigDecimal convertido = resumen.total().multiply(tasa).setScale(2, RoundingMode.HALF_EVEN);
+        return new ResumenConvertido(
+                resumen.cantidad(), resumen.total(), destino, tasa, convertido);
     }
 }
