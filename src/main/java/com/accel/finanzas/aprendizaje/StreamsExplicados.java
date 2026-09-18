@@ -1,6 +1,6 @@
 package com.accel.finanzas.aprendizaje;
 
-import com.accel.finanzas.Movimiento;
+import com.accel.finanzas.model.Movimiento;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;

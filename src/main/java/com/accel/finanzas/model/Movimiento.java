@@ -1,4 +1,4 @@
-package com.accel.finanzas;
+package com.accel.finanzas.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

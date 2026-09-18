@@ -1,4 +1,4 @@
-package com.accel.finanzas;
+package com.accel.finanzas.controller;
 
 import java.time.LocalDateTime;
 import org.springframework.web.bind.annotation.GetMapping;
