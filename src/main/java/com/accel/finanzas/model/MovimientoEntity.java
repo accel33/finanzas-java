@@ -8,9 +8,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "movimientos")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class MovimientoEntity {
 
     @Id
@@ -25,29 +32,4 @@ public class MovimientoEntity {
 
     @Column(nullable = false)
     private LocalDate fecha;
-
-    protected MovimientoEntity() {}
-
-    public MovimientoEntity(Long id, String descripcion, BigDecimal monto, LocalDate fecha) {
-        this.id = id;
-        this.descripcion = descripcion;
-        this.monto = monto;
-        this.fecha = fecha;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public BigDecimal getMonto() {
-        return monto;
-    }
-
-    public LocalDate getFecha() {
-        return fecha;
-    }
 }

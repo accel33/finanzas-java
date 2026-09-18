@@ -4,17 +4,15 @@ import com.accel.finanzas.model.Movimiento;
 import com.accel.finanzas.model.MovimientoEntity;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@RequiredArgsConstructor
 public class MovimientoRepositoryJpa implements MovimientoRepository {
 
     private final MovimientoJpaRepository jpa;
-
-    public MovimientoRepositoryJpa(MovimientoJpaRepository jpa) {
-        this.jpa = jpa;
-    }
 
     @Override
     public List<Movimiento> buscarTodos() {

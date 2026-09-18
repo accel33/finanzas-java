@@ -105,6 +105,14 @@ Esconde consultas perezosas fuera del service. Lo desactivo con `spring.jpa.open
 Con **Testcontainers**: el test levanta un PostgreSQL real en Docker y lo destruye al
 terminar. H2 es más rápido pero no es PostgreSQL, y hay SQL que se comporta distinto.
 
+### ¿Usas Lombok?
+Sí, con criterio. En entidades JPA: `@Getter` y los constructores, **nunca `@Data`** — su
+`equals/hashCode` con todos los campos se rompe con ids generados, y su `toString` dispara la
+carga perezosa o recursión infinita. En servicios: `@RequiredArgsConstructor`, que **sigue
+siendo inyección por constructor**, solo que Lombok escribe el constructor. `@Slf4j` para el
+logger. Y en DTOs uso **records**: ahí Lombok no aporta, el lenguaje ya genera todo. Lombok es
+un *annotation processor*: trabaja al compilar y no viaja en el jar.
+
 ### Códigos de estado
 **201 Created** con cabecera `Location` al crear. **204 No Content** al borrar. **404** si el
 id no existe. **400** si los datos no validan. **406** si el cliente pide un formato que no

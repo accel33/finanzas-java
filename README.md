@@ -5,7 +5,7 @@ Proyecto de aprendizaje **construido por etapas** rumbo al stack backend bancari
 El dominio son finanzas personales porque mapea directo a banca: tipo de cambio →
 circuit breaker + cache, saldo vs historial → CQRS, transferencias → SAGA.
 
-## Cómo correr (estado actual: Etapa 5)
+## Cómo correr (estado actual: Etapa 6)
 
 En desarrollo (la base corre en Docker):
 
@@ -64,7 +64,7 @@ java -cp target/classes com.accel.finanzas.aprendizaje.InyeccionExplicada
    - Dinero **siempre** en `BigDecimal`, nunca `double` ni `float`.
    - `record` para DTOs (*Data Transfer Objects*: objetos sin lógica que cruzan
      fronteras, p. ej. salir como JSON) y objetos de valor; Lombok solo cuando
-     aporte de verdad (entidades JPA con muchos campos — llegará en la Etapa 6).
+     aporte de verdad (entidades JPA, `@RequiredArgsConstructor`, `@Slf4j`; nunca `@Data` en entidades).
    - Todo se corre y se prueba antes de dar la etapa por cerrada.
 
 > **[Chuleta de entrevista](docs/CHULETA-ENTREVISTA.md)** — todo lo construido aquí, en formato pregunta/respuesta.
@@ -78,7 +78,7 @@ java -cp target/classes com.accel.finanzas.aprendizaje.InyeccionExplicada
 - [x] **Etapa 3** — Capas: controller / service / repository + validación + errores → [guía](docs/etapa-03-capas-validacion-errores.md)
 - [x] **Etapa 4** — Tests con JUnit y Mockito → [guía](docs/etapa-04-tests.md)
 - [x] **Etapa 5** — PostgreSQL con Docker + JPA + Flyway → [guía](docs/etapa-05-postgresql-jpa.md)
-- [ ] **Etapa 6** — Lombok: dónde aporta y dónde un record lo reemplaza
+- [x] **Etapa 6** — Lombok: dónde aporta y dónde un record lo reemplaza → [guía](docs/etapa-06-lombok.md)
 
 ### Fase B — Resiliencia y reactivo
 - [ ] **Etapa 7** — Cliente de tipo de cambio (API externa, timeouts)

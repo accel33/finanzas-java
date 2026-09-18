@@ -6,16 +6,16 @@ import com.accel.finanzas.model.Resumen;
 import com.accel.finanzas.repository.MovimientoRepository;
 import java.math.BigDecimal;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class MovimientoService {
 
     private final MovimientoRepository repositorio;
-
-    public MovimientoService(MovimientoRepository repositorio) {
-        this.repositorio = repositorio;
-    }
 
     public List<Movimiento> listar() {
         return repositorio.buscarTodos();
@@ -28,7 +28,11 @@ public class MovimientoService {
     }
 
     public Movimiento crear(Movimiento nuevo) {
-        return repositorio.guardar(new Movimiento(null, nuevo.descripcion(), nuevo.monto(), nuevo.fecha()));
+        Movimiento creado =
+                repositorio.guardar(
+                        new Movimiento(null, nuevo.descripcion(), nuevo.monto(), nuevo.fecha()));
+        log.info("Movimiento creado id={} monto={}", creado.id(), creado.monto());
+        return creado;
     }
 
     public Movimiento reemplazar(Long id, Movimiento datos) {
@@ -41,6 +45,7 @@ public class MovimientoService {
         if (!repositorio.eliminar(id)) {
             throw new MovimientoNoEncontradoException(id);
         }
+        log.info("Movimiento eliminado id={}", id);
     }
 
     public Resumen resumen() {
